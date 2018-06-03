@@ -3,6 +3,8 @@ package com.nphan.android.photogallery;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,7 +68,8 @@ public class FlickrFetchr {
             String jsonString = getUrlString(url);
             Log.i(TAG, "Received JSON:" + jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);
-            parseItems(items, jsonBody);
+            //parseItems(items, jsonBody);
+            parseByGson(items, jsonBody);
         }
         catch (IOException ioe) {
             Log.e(TAG, "Failed to fetch items", ioe);
@@ -76,6 +79,20 @@ public class FlickrFetchr {
         }
 
         return items;
+    }
+
+    private void parseByGson(List<GalleryItem> items, JSONObject  jsonObject) throws JSONException{
+
+        JSONObject photosJsonObject = jsonObject.getJSONObject("photos");
+        JSONArray photoJsonArray = photosJsonObject.getJSONArray("photo");
+
+        Gson gson = new Gson();
+
+        for (int i = 0; i < photoJsonArray.length(); i++) {
+            JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
+            String jsonString = photoJsonObject.toString();
+            items.add(gson.fromJson(jsonString, GalleryItem.class));
+        }
     }
 
     private void parseItems(List<GalleryItem> items, JSONObject jsonBody) throws IOException, JSONException {
