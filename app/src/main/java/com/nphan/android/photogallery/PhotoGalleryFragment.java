@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ import java.util.List;
 public class PhotoGalleryFragment extends Fragment {
 
     private static final String TAG = "PhotoGalleryFragment";
+
+    private static final int COLUMN_SIZE = 300;
 
     private int mPage = 1;
 
@@ -53,6 +56,16 @@ public class PhotoGalleryFragment extends Fragment {
                     mPage += 1;
                     new FetchItemsTask().execute();
                 }
+            }
+        });
+
+        mPhotoRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mPhotoRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int width = mPhotoRecyclerView.getWidth();
+                int columns = width / COLUMN_SIZE;
+                mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), columns));
             }
         });
 
