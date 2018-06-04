@@ -10,7 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,16 +55,19 @@ public class PhotoGalleryFragment extends Fragment {
     }
 
     private class PhotoHolder extends RecyclerView.ViewHolder {
-        private TextView mTitleTextView;
+        private ImageView mImageView;
 
         public PhotoHolder(View itemView) {
             super(itemView);
 
-            mTitleTextView = (TextView) itemView;
+            mImageView = itemView.findViewById(R.id.item_image_view);
         }
 
         public void bindGalleryItem(GalleryItem item) {
-            mTitleTextView.setText(item.toString());
+            Picasso.get()
+                    .load(item.getUrl())
+                    .placeholder(R.drawable.ic_launcher_background)
+                    .into(mImageView);
         }
     }
 
@@ -76,8 +81,10 @@ public class PhotoGalleryFragment extends Fragment {
 
         @Override
         public PhotoHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView textView = new TextView(getActivity());
-            return new PhotoHolder(textView);
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.list_item_gallery, parent, false);
+            return new PhotoHolder(view);
+
         }
 
         @Override
