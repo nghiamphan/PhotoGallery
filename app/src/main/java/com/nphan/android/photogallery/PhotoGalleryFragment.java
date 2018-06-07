@@ -98,6 +98,7 @@ public class PhotoGalleryFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                 Log.d(TAG, "QueryTextSubmit: " + query);
                 QueryPreferences.setStoredQuery(getActivity(), query);
+                searchView.onActionViewCollapsed();
                 updateItems();
                 return true;
             }
